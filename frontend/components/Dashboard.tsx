@@ -1,7 +1,7 @@
 ﻿"use client";
 
 import { useEffect, useState } from 'react';
-import axios from 'axios';
+import api from '@/lib/api';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 import { Users, ShoppingBag, DollarSign, RefreshCw, TrendingUp } from 'lucide-react';
 import { CustomTooltip } from './CustomTooltip';
@@ -41,10 +41,10 @@ export default function Dashboard({ tenantId }: { tenantId: string }) {
         setLoading(true);
         try {
             const [statsRes, ordersRes, customersRes] = await Promise.all([
-                axios.get(`http://localhost:4000/insights/stats?tenantId=${tenantId}`),
-                axios.get(`http://localhost:4000/insights/orders-by-date?tenantId=${tenantId}`),
-                axios.get(`http://localhost:4000/insights/top-customers?tenantId=${tenantId}`),
-            ]);
+            api.get(`/insights/stats?tenantId=${tenantId}`),
+            api.get(`/insights/orders-by-date?tenantId=${tenantId}`),
+            api.get(`/insights/top-customers?tenantId=${tenantId}`),
+        ]);
             setStats(statsRes.data || null);
             setOrdersByDate(ordersRes.data || []);
             setTopCustomers(customersRes.data || []);
@@ -63,10 +63,10 @@ export default function Dashboard({ tenantId }: { tenantId: string }) {
         setIngesting(true);
         try {
             await Promise.all([
-                axios.post('http://localhost:4000/ingest/products', { tenantId }),
-                axios.post('http://localhost:4000/ingest/customers', { tenantId }),
-                axios.post('http://localhost:4000/ingest/orders', { tenantId }),
-            ]);
+            api.post('/ingest/products', { tenantId }),
+            api.post('/ingest/customers', { tenantId }),
+            api.post('/ingest/orders', { tenantId }),
+        ]);
             fetchData();
             alert('Ingestion started/completed!');
         } catch (error) {

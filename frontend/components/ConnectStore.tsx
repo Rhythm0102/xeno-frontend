@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from 'react';
-import axios from 'axios';
+import api from '@/lib/api';
 import { Lock, Link as LinkIcon } from 'lucide-react';
 import { ThemeToggle } from './ThemeProvider';
 
@@ -17,11 +17,11 @@ export default function ConnectStore({ onConnect }: { onConnect: (tenantId: stri
         setError('');
 
         try {
-            const res = await axios.post('http://localhost:4000/ingest/tenant', {
-                shopifyDomain: domain,
-                accessToken: token,
-                shopName: domain.split('.')[0],
-            });
+            const res = await api.post('/ingest/tenant', {
+            shopifyDomain: domain,
+            accessToken: token,
+            shopName: domain.split('.')[0],
+        });
             onConnect(res.data.id);
         } catch (err: any) {
             setError(err.response?.data?.error || 'Failed to connect store');
